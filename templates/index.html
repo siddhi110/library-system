@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Library Management System</h1>
+        <div style="text-align: right; margin-bottom: 20px;">
+    {% if session.username %}
+        Welcome, {{ session.username }}! | <a href="/logout" style="color: red;">Logout</a>
+    {% else %}
+        <a href="/login">Login</a> | <a href="/register">Register</a>
+    {% endif %}
+</div>
+
+        <h2>Add New Book</h2>
+        <form action="/add" method="POST">
+            <input type="text" name="title" placeholder="Book Title" required>
+            <input type="text" name="author" placeholder="Author Name" required>
+            <button type="submit">Add Book</button>
+        </form>
+
+        <h2>Book List</h2>
+        <input type="text" id="searchBox" placeholder="Book shodha..." onkeyup="searchTable()" style="padding:8px; width:250px; margin-bottom:10px; border:1px solid #ccc;">
+        <table id="bookTable" border="1" style="width:100%; border-collapse: collapse;">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            {% for book in books %}
+            <tr>
+                <td>{{ book[0] }}</td>
+                <td>{{ book[1] }}</td>
+                <td>{{ book[2] }}</td>
+                <td>{{ book[3] }}</td>
+                <td>
+                    {% if book[3] == 'Available' %}
+                    <a href="/issue/{{book[0]}}">Issue</a> |
+                    {% endif %}
+                    <a href="/delete/{{book[0]}}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <script>
+function searchTable() {
+  let input = document.getElementById("searchBox");
+  let filter = input.value.toUpperCase();
+  let table = document.getElementById("bookTable");
+  let tr = table.getElementsByTagName("tr");
+
+  for (let i = 1; i < tr.length; i++) {
+    let td = tr[i].getElementsByTagName("td")[1]; // Title cha column
+    if (td) {
+      let txtValue = td.textContent || td.innerText;
+      tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1? "" : "none";
+    }
+  }
+}
+</script>
+<style>
+button, a {
+    padding: 8px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+}
+
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+a[href*="issue"] {
+    background-color: #2196F3;
+    color: white;
+}
+
+a[href*="delete"] {
+    background-color: #f44336;
+    color: white;
+}
+
+button:hover, a:hover {
+    opacity: 0.8;
+}
+
+#searchBox {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+</style>
+    </div>
+</body>
+</html>
