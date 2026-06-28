@@ -25,7 +25,8 @@ def init_db():
     c.execute('''CREATE TABLE IF NOT EXISTS users
              (id INTEGER PRIMARY KEY AUTOINCREMENT,
               username TEXT NOT NULL UNIQUE,
-              password TEXT NOT NULL)''')
+              password TEXT NOT NULL,
+             role TEXT DEFAULT 'student')''')
     
     conn.commit()
     conn.close()
@@ -113,6 +114,7 @@ def login():
         conn.close()
         if user:
             session['username'] = username
+            session['role'] = user[3] 
             return redirect(url_for('home'))
         else:
             return "Chukicha username/password!"
@@ -121,6 +123,14 @@ def login():
 def logout():
     session.pop('username', None)
     return redirect(url_for('home'))
+
+with app.app_context():
+    conn = sqlite3.connect('library.db')
+    c = conn.cursor()
+    # jar admin user ahe tar tyala admin banav
+    c.execute("UPDATE users SET role = 'admin' WHERE username = 'admin'")
+    conn.commit()
+    conn.close()
 
 if __name__ == '__main__':
     app.run(debug=True)

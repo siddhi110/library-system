@@ -14,13 +14,14 @@
         <a href="/login">Login</a> | <a href="/register">Register</a>
     {% endif %}
 </div>
-
-        <h2>Add New Book</h2>
-        <form action="/add" method="POST">
-            <input type="text" name="title" placeholder="Book Title" required>
-            <input type="text" name="author" placeholder="Author Name" required>
-            <button type="submit">Add Book</button>
-        </form>
+        {% if session.get('role') == 'admin' %}
+<h2>Add New Book</h2>
+<form method="POST" action="/add">
+    <input type="text" name="title" placeholder="Book Title">
+    <input type="text" name="author" placeholder="Author Name">
+    <button type="submit">Add Book</button>
+</form>
+{% endif %}
 
         <h2>Book List</h2>
         <input type="text" id="searchBox" placeholder="Book shodha..." onkeyup="searchTable()" style="padding:8px; width:250px; margin-bottom:10px; border:1px solid #ccc;">
