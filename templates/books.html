@@ -1,86 +1,62 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library - All Books</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-        .header {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .header h3 {
-            margin: 0 0 15px 0;
-        }
-        .header a {
-            text-decoration: none;
-            background: #007bff;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-        .header a:hover {
-            background: #0056b3;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        button {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 5px;
-        }
-        .btn-issue { background: #28a745; color: white; }
-        .btn-edit { background: #ffc107; color: black; }
-        .btn-delete { background: #dc3545; color: white; }
-        .btn-request { background: #17a2b8; color: white; }
-        .no-books {
-            text-align: center;
-            margin-top: 50px;
-            color: gray;
-            font-size: 18px;
-        }
+        body { font-family: Arial; background: #f4f4f4; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header h3 { margin: 0; }
+        .header a { text-decoration: none; padding: 8px 15px; border-radius: 5px; color: white; }
+        .btn-add { background: #28a745; }
+        .btn-logout { background: #dc3545; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background: #17a2b8; color: white; }
+        .btn-request { background: #17a2b8; color: white; padding: 6px 12px; text-decoration: none; border-radius: 5px; border: none; cursor: pointer; }
+        .btn-request:hover { background: #138496; }
+        .btn-edit { background: #ffc107; color: black; padding: 6px 12px; text-decoration: none; border-radius: 5px; }
+        .btn-delete { background: #dc3545; color: white; padding: 6px 12px; text-decoration: none; border-radius: 5px; }
+        .header div a { margin-right: 8px; }
+        .header div a:hover { opacity: 0.8; }
     </style>
 </head>
 <body>
+<div class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="padding:12px; margin:15px 0; border-radius:5px; 
+            background: {% if category == 'success' %}#d4edda{% elif category == 'danger' %}#f8d7da{% else %}#cce5ff{% endif %};
+            color: {% if category == 'success' %}#155724{% elif category == 'danger' %}#721c24{% else %}#004085{% endif %};
+            border: 1px solid {% if category == 'success' %}#c3e6cb{% elif category == 'danger' %}#f5c6cb{% else %}#b8daff{% endif %};">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
     <div class="header">
-        <h3>All Books</h3>
-        {% if session.get('role') == 'admin' %}
-            <a href="/add_book">+ Add New Book</a>
-        {% endif %}
-        <a href="/logout">Logout</a>
-        <span style="float:right;">Logged in as: {{ session.get('username') }} ({{ session.get('role') }})</span>
+        <h3>📚 All Books</h3>
+        <div>
+            <a href="/home"style="background: #007bff;">Home</a>
+            <a href="/about" style="background: #6c757d;">About</a>
+            <a href="books" style="background: #17a2b8;">Books</a>
+
+            {% if session.get('role') == 'admin' %}
+                <a href="/add_book" class="btn-add">+ Add New Book</a>
+            {% endif %}
+
+            <span>Logged in as: <b>{{ session.get('username') }}</b></span>
+            <a href="/logout" class="btn-logout">Logout</a>
+        </div>
     </div>
 
+
+    {% if books %}
     <table>
         <tr>
             <th>ID</th>
@@ -91,29 +67,31 @@
             <th>Action</th>
         </tr>
         {% for book in books %}
-        {% set available = book['total_copies'] - book['issued_copies'] %}
         <tr>
             <td>{{ book['id'] }}</td>
             <td>{{ book['title'] }}</td>
             <td>{{ book['author'] }}</td>
-            <td>{{ available }}</td>
+            <td>{{ book['available'] }}</td>
             <td>{{ book['total_copies'] }}</td>
             <td>
                 {% if session.get('role') == 'admin' %}
-                    <a href="/issue_book/{{ book['id'] }}"><button class="btn-issue">Issue</button></a>
-                    <a href="/edit_book/{{ book['id'] }}"><button class="btn-edit">Edit</button></a>
-                    <a href="/delete_book/{{ book['id'] }}" onclick="return confirm('Nakki delete karaycha?')"><button class="btn-delete">Delete</button></a>
+                    <a href="/edit_book/{{ book['id'] }}" class="btn-edit">Edit</a>
+                    <a href="/delete_book/{{ book['id'] }}" class="btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
                 {% else %}
-                    <button class="btn-request">Request</button>
+                    {% if book['available'] > 0 %}
+                        <a href="/request_book/{{ book['id'] }}" class="btn-request">Request</a>
+                    {% else %}
+                        <span style="color: red; font-weight: bold;">Not Available</span>
+                    {% endif %}
                 {% endif %}
             </td>
         </tr>
         {% endfor %}
     </table>
-
-    {% if not books %}
-        <p class="no-books">No books found. Add some books first.</p>
+    {% else %}
+        <p>No books found in library.</p>
     {% endif %}
 
+</div>
 </body>
 </html>

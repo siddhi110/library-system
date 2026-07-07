@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home - Library</title>
+    <style>
+        body { font-family: Arial; background: #f4f4f4; margin: 0; padding: 20px; text-align: center; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 40px; border-radius: 10px; }
+        h1 { color: #17a2b8; }
+        .btn { display: inline-block; margin: 10px; padding: 12px 25px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px; }
+        .btn:hover { background: #138496; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Welcome to Library Management System</h1>
+        <p>Hello <b>{{ session.get('username') }}</b>! Welcome back.</p>
+        <p>Here you can browse books, request them, and manage your library account.</p>
+        
+        <a href="/books" class="btn">Browse Books</a>
+        <a href="/about" class="btn" style="background: #6c757d;">About Us</a>
+        <a href="/logout" class="btn" style="background: #dc3545;">Logout</a>
+    </div>
+</body>
+</html>

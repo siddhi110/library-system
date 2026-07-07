@@ -8,6 +8,11 @@
         <input type="text" name="author" placeholder="Author Name" required><br><br>
         <button type="submit">Add Book</button>
     </form>
-    <a href="/books">Back to List</a>
+    <label>Subject ID:</label>
+<input type="number" name="subject_id" required><br><br>
+
+<label>Total Copies:</label>
+<input type="number" name="total_copies" value="1" required><br><br>
+<a href="{{ url_for('index') }}">Back to Home</a>
 </body>
 </html>

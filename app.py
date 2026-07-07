@@ -7,9 +7,9 @@ app = Flask(__name__)
 app.secret_key = 'your_very_secret_key_123'
 
 def get_db():
-    conn = sqlite3.connect('library.db')
-    conn.row_factory = sqlite3.Row
-    return conn
+    db = sqlite3.connect('library.db')
+    db.row_factory = sqlite3.Row
+    return db
 
 def init_db():
     conn = get_db()
@@ -187,6 +187,35 @@ def edit_book(id):
     book = conn.execute('SELECT * FROM books WHERE id = ?', (id,)).fetchone()
     conn.close()
     return render_template('edit_book.html', book=book)
+
+@app.route('/request_book/<int:book_id>')
+def request_book(book_id):
+    if 'username' not in session:  # he 1 line add kar
+        flash("Please Login to request a book.", 'danger')
+        return redirect('/login')
+    
+    user = session['username']
+    conn = sqlite3.connect('library.db')
+    cursor = conn.cursor()
+    
+    cursor.execute("INSERT INTO requests(username, book_id, status) VALUES(?, ?, 'Pending')", (user, book_id))
+    cursor.execute("UPDATE books SET available = available - 1 WHERE id = ? AND available > 0", (book_id,))
+    
+    conn.commit()
+    conn.close()
+    
+    flash("Book Request Sent!", 'success')
+    return redirect('/books')
+
+@app.route('/home')
+def home():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return render_template('home.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 if __name__ == '__main__':
     init_db()

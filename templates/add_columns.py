@@ -32,3 +32,24 @@ conn.commit()
 conn.close()
 print("\nSAFE UPDATE DONE! Tuza juna data safe ahe ✅")
 print("Aata Step 2 la jau.")
+
+import sqlite3
+
+conn = sqlite3.connect('library.db')
+cursor = conn.cursor()
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    book_id INTEGER,
+    status TEXT
+)''')
+
+try:
+    cursor.execute("ALTER TABLE books ADD COLUMN available INTEGER DEFAULT 5")
+except:
+    pass
+
+conn.commit()
+conn.close()
+print("Done")
