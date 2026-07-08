@@ -1,18 +1,43 @@
 <!DOCTYPE html>
-<html>
-<head><title>Add Book</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Book - Library Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f8f9fa; }
+    .navbar { background: #2c3e50; }
+  </style>
+</head>
 <body>
-    <h2>Add New Book</h2>
-    <form method="POST">
-        <input type="text" name="title" placeholder="Book Title" required><br><br>
-        <input type="text" name="author" placeholder="Author Name" required><br><br>
-        <button type="submit">Add Book</button>
-    </form>
-    <label>Subject ID:</label>
-<input type="number" name="subject_id" required><br><br>
 
-<label>Total Copies:</label>
-<input type="number" name="total_copies" value="1" required><br><br>
-<a href="{{ url_for('index') }}">Back to Home</a>
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">📚 Library Portal</a>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <div class="card shadow p-4">
+    <h3 class="mb-4">➕ Add New Book</h3>
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Book Name</label>
+        <input type="text" name="title" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Author Name</label>
+        <input type="text" name="author" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Quantity</label>
+        <input type="number" name="total_copies" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-success">Add Book</button>
+      <a href="/books" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>

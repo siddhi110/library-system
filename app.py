@@ -110,23 +110,25 @@ def books():
 @app.route('/add_book', methods=['GET', 'POST'])
 @login_required
 def add_book():
-    if session.get('role') != 'admin':
-        flash('Only admin can add books', 'error')
-        return redirect(url_for('books'))
-        
+    #if session.get('role') != 'admin':
+    #  flash('Only admin can add books', 'error')
+    #  return redirect(url_for('books'))
+
+
     if request.method == 'POST':
         title = request.form['title']
         author = request.form['author']
-        total_copies = request.form.get('total_copies', 1)
-        
+        total_copies = int(request.form.get('total_copies', 1))
+
         conn = get_db()
-        conn.execute('INSERT INTO books (title, author, total_copies, issued_copies) VALUES (?, ?, ?, 0)', 
-                     (title, author, total_copies, 0))
+        conn.execute('INSERT INTO books (title, author, total_copies) VALUES (?, ?, ?)',
+                     (title, author, total_copies))
         conn.commit()
         conn.close()
+        
         flash('Book added successfully!', 'success')
         return redirect(url_for('books'))
-    
+
     return render_template('add_book.html')
 
 @app.route('/delete_book/<int:id>')
@@ -216,6 +218,20 @@ def home():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+@app.route('/students')
+def students():
+    return render_template('students.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/issued')
+def issued():
+    return render_template('issued.html')
+
+
 
 if __name__ == '__main__':
     init_db()

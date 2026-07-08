@@ -1,97 +1,84 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Library - All Books</title>
+    <title>Books - Library Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial; background: #f4f4f4; margin: 0; padding: 20px; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .header h3 { margin: 0; }
-        .header a { text-decoration: none; padding: 8px 15px; border-radius: 5px; color: white; }
-        .btn-add { background: #28a745; }
-        .btn-logout { background: #dc3545; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
-        th { background: #17a2b8; color: white; }
-        .btn-request { background: #17a2b8; color: white; padding: 6px 12px; text-decoration: none; border-radius: 5px; border: none; cursor: pointer; }
-        .btn-request:hover { background: #138496; }
-        .btn-edit { background: #ffc107; color: black; padding: 6px 12px; text-decoration: none; border-radius: 5px; }
-        .btn-delete { background: #dc3545; color: white; padding: 6px 12px; text-decoration: none; border-radius: 5px; }
-        .header div a { margin-right: 8px; }
-        .header div a:hover { opacity: 0.8; }
+        body { background: #f8fafc; font-family: 'Poppins', sans-serif; }
+        .navbar { background: #0f172a; }
+        .page-title {
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            color: white; padding: 40px 20px; border-radius: 15px;
+            text-align: center; margin: 20px;
+        }
+        .book-card { border-radius: 15px; border: none; transition: 0.3s; }
+        .book-card:hover { transform: translateY(-5px); }
     </style>
 </head>
 <body>
-<div class="container">
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div style="padding:12px; margin:15px 0; border-radius:5px; 
-            background: {% if category == 'success' %}#d4edda{% elif category == 'danger' %}#f8d7da{% else %}#cce5ff{% endif %};
-            color: {% if category == 'success' %}#155724{% elif category == 'danger' %}#721c24{% else %}#004085{% endif %};
-            border: 1px solid {% if category == 'success' %}#c3e6cb{% elif category == 'danger' %}#f5c6cb{% else %}#b8daff{% endif %};">
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+  <a href="/add_book" class="btn btn-primary m-3">➕ Add New Book</a>
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">📚 Library Portal</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="/home">🏠 Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/books">📖 Books</a></li>
+        <li class="nav-item"><a class="nav-link" href="/students">👨‍🎓 Students</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about">ℹ️ About</a></li>
+        <li class="nav-item"><a class="nav-link" href="/dashboard">📊 Dashboard</a></li>
+        <hr style="border-color:#555; margin:10px20px;">
+        <li class="nav-item mb-2 px-3">
+          <a class="btn btn-outline-light w-100" href="/login">🔑 Login</a>
+        </li>
+        <li class="nav-item px-3">
+        <a class="btn btn-outline-light w-100" href="/register">📝Register</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
-    <div class="header">
-        <h3>📚 All Books</h3>
-        <div>
-            <a href="/home"style="background: #007bff;">Home</a>
-            <a href="/about" style="background: #6c757d;">About</a>
-            <a href="books" style="background: #17a2b8;">Books</a>
+<div class="page-title">
+    <h1>📖 All Books</h1>
+    <p>Total Books in Library: 500+</p>
+</div>
 
-            {% if session.get('role') == 'admin' %}
-                <a href="/add_book" class="btn-add">+ Add New Book</a>
-            {% endif %}
-
-            <span>Logged in as: <b>{{ session.get('username') }}</b></span>
-            <a href="/logout" class="btn-logout">Logout</a>
-        </div>
+<div class="container my-4">
+  <div class="row">
+  
+    <div class="col-md-4 mb-4">
+      <div class="card book-card shadow-sm p-3">
+        <h5>📘 Python Programming</h5>
+        <p><b>Author:</b> Guido van Rossum</p>
+        <p><b>Status:</b> <span class="badge bg-success">Available</span></p>
+      </div>
     </div>
 
+    <div class="col-md-4 mb-4">
+      <div class="card book-card shadow-sm p-3">
+        <h5>📗 Data Structures</h5>
+        <p><b>Author:</b> Robert Lafore</p>
+        <p><b>Status:</b> <span class="badge bg-danger">Issued</span></p>
+      </div>
+    </div>
 
-    {% if books %}
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Available</th>
-            <th>Total Copies</th>
-            <th>Action</th>
-        </tr>
-        {% for book in books %}
-        <tr>
-            <td>{{ book['id'] }}</td>
-            <td>{{ book['title'] }}</td>
-            <td>{{ book['author'] }}</td>
-            <td>{{ book['available'] }}</td>
-            <td>{{ book['total_copies'] }}</td>
-            <td>
-                {% if session.get('role') == 'admin' %}
-                    <a href="/edit_book/{{ book['id'] }}" class="btn-edit">Edit</a>
-                    <a href="/delete_book/{{ book['id'] }}" class="btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
-                {% else %}
-                    {% if book['available'] > 0 %}
-                        <a href="/request_book/{{ book['id'] }}" class="btn-request">Request</a>
-                    {% else %}
-                        <span style="color: red; font-weight: bold;">Not Available</span>
-                    {% endif %}
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-        <p>No books found in library.</p>
-    {% endif %}
+    <div class="col-md-4 mb-4">
+      <div class="card book-card shadow-sm p-3">
+        <h5>📙 Web Development</h5>
+        <p><b>Author:</b> Jon Duckett</p>
+        <p><b>Status:</b> <span class="badge bg-success">Available</span></p>
+      </div>
+    </div>
 
+  </div>
 </div>
+
 </body>
 </html>
