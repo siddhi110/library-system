@@ -1,0 +1,20 @@
+2 - Information Technology
+3 - Mechanical Engineering
+4 - Electrical Engineering
+
+Role - Full Stack Engineering
+Frontend - React js, Angular JS - HTML, JavaScript, Python Flask
+Middleware - Node JS, Python Fast API
+Backend - Database - Oracle, SQL, Postgres, Mongo DB
+
+pip freeze > requirements.txt
+
+git clone https://github.com/siddhi110/library-system.git
+
+For Deploy Follow link (cmd + click)
+https://www.pythonanywhere.com/
+
+Commands to use in python anywhere -
+
+cd"library management system"
+pip install -r requirements.txt

@@ -1,3 +1,5 @@
+import sqlite3
+from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 import sqlite3
 from functools import wraps
@@ -38,8 +40,18 @@ def init_db():
                   return_date TEXT,
                   FOREIGN KEY (user_id) REFERENCES users (id),
                   FOREIGN KEY (book_id) REFERENCES books (id))''')
-    conn.commit()
-    conn.close()
+
+# Students Table
+    c.execute('''CREATE TABLE IF NOT EXISTS students
+             (id INTEGER PRIMARY KEY AUTOINCREMENT,
+              student_id TEXT UNIQUE,
+              name TEXT,
+              department TEXT,
+              year TEXT,
+              mobile TEXT,
+              email TEXT)''')
+
+init_db()
 
 def login_required(f):
     @wraps(f)
@@ -219,9 +231,6 @@ def home():
 def about():
     return render_template('about.html')
 
-@app.route('/students')
-def students():
-    return render_template('students.html')
 
 @app.route('/dashboard')
 def dashboard():
@@ -231,7 +240,48 @@ def dashboard():
 def issued():
     return render_template('issued.html')
 
+@app.route('/students')
+def students():
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("SELECT * FROM students")
+    data = c.fetchall()
+    conn.close()
+    return render_template('students.html', students=data)
 
+@app.route('/issue', methods=['GET', 'POST'])
+def issue():
+    db = get_db()
+    
+    if request.method == 'POST':
+        student_id = request.form['student_id']
+        book_id = request.form['book_id']
+        issue_date = datetime.now().strftime('%Y-%m-%d')
+        return_date = (datetime.now() + timedelta(days=14)).strftime('%Y-%m-%d') # 14 divsanchi mudat
+        
+        db.execute("INSERT INTO issued_books (student_id, book_id, issue_date, return_date) VALUES (?,?,?,?)",
+                   (student_id, book_id, issue_date, return_date))
+        
+        db.execute("UPDATE books SET available = available - 1 WHERE id = ?", (book_id,))
+        
+        db.commit()
+        return redirect('/issued')
+    
+    students = db.execute('SELECT * FROM students').fetchall()
+    books = db.execute('SELECT * FROM books WHERE available > 0').fetchall()
+    db.close()
+    return render_template('issue.html', students=students, books=books)
+
+@app.route('/reports')
+def reports():
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM books")
+    total_books = c.fetchone()[0]
+    c.execute("SELECT COUNT(*) FROM issued_books")
+    issued_books = c.fetchone()[0]
+    conn.close()
+    return render_template('reports.html', total=total_books, issued=issued_books)
 
 if __name__ == '__main__':
     init_db()
