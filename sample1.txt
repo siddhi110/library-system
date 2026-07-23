@@ -18,3 +18,17 @@ Commands to use in python anywhere -
 
 cd"library management system"
 pip install -r requirements.txt
+
+set virtual environment on python where
+https://siddhi25.pythonanywhere.com/ 
+
+
+
+
+configuration on WSGI file-
+import sys
+path = '/home/SIDDHI25/library-system'
+if path not in sys.path:
+    sys.path.append(path)
+
+from app import app as application
